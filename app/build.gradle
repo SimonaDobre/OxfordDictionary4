@@ -17,9 +17,21 @@ android {
     }
 
     buildTypes {
+        debug{
+            buildConfigField 'String', "APP_KEY_OXFORD", OXFORD_API_KEY
+            buildConfigField 'String', "APP_ID_OXFORD", OXFORD_API_ID
+            resValue 'string', "APP_KEY_OXFORD", OXFORD_API_KEY
+            resValue 'string', "APP_ID_OXFORD", OXFORD_API_ID
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "APP_KEY_OXFORD", OXFORD_API_KEY
+            buildConfigField 'String', "APP_ID_OXFORD", OXFORD_API_ID
+            resValue 'string', "APP_KEY_OXFORD", OXFORD_API_KEY
+            resValue 'string', "APP_ID_OXFORD", OXFORD_API_ID
+
         }
     }
     compileOptions {
