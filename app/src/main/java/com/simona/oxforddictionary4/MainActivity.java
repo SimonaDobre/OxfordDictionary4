@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String baseURLLstring =
             "https://od-api.oxforddictionaries.com:443/api/v2/entries/";
+    private String app_idul = BuildConfig.APP_ID_OXFORD;
+    private String app_keyul = BuildConfig.APP_KEY_OXFORD;
 
     List<String> listDefinitions, listSynonymus, listExamples;
 
@@ -82,20 +84,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int clickedID = view.getId();
                 switch (clickedID) {
-//                    case R.id.searchButton:
-//                        searchedWord = inputED.getText().toString().trim().toLowerCase();
-//                        listDefinitions.clear();
-//                        listExamples.clear();
-//                        listSynonymus.clear();
-//
-//                        definitionTV.setText("DEFINITIONS: " + "\n");
-//                        synonymusTV.setText("SYNONYMS: " + "\n");
-//                        exampleTV.setText("EXAMPLES: " + "\n");
-//
-//                        getDefinitionExamplesSynonyms(searchedWord);
-//                        inputED.setText(null);
-//                        hidekeyboard();
-//                        break;
+                    case R.id.searchButton:
+                        searchedWord = inputED.getText().toString().trim().toLowerCase();
+                        listDefinitions.clear();
+                        listExamples.clear();
+                        listSynonymus.clear();
+
+                        definitionTV.setText("DEFINITIONS: " + "\n");
+                        synonymusTV.setText("SYNONYMS: " + "\n");
+                        exampleTV.setText("EXAMPLES: " + "\n");
+
+                        getDefinitionExamplesSynonyms(searchedWord);
+                        inputED.setText(null);
+                        hidekeyboard();
+                        break;
                     case R.id.speakerButton:
                         tts.setSpeechRate(1.0f);
                         tts.speak(searchedWord, TextToSpeech.QUEUE_FLUSH, null);
@@ -103,25 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-//        searchBtn.setOnClickListener(clickBtnListener);
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchedWord = inputED.getText().toString().trim().toLowerCase();
-                listDefinitions.clear();
-                listExamples.clear();
-                listSynonymus.clear();
-
-                definitionTV.setText("DEFINITIONS: " + "\n");
-                synonymusTV.setText("SYNONYMS: " + "\n");
-                exampleTV.setText("EXAMPLES: " + "\n");
-
-                getDefinitionExamplesSynonyms(searchedWord);
-                inputED.setText(null);
-                hidekeyboard();
-            }
-        });
         spearkerButton.setOnClickListener(clickBtnListener);
+        searchBtn.setOnClickListener(clickBtnListener);
     }
 
     void speak() {
@@ -141,13 +126,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getDefinitionExamplesSynonyms(String searchedWord) {
-        Call<Example> callerExample = apIinterface.getDefExamplesSynonymsFromDictionary(searchedWord);
+        Call<Example> callerExample = apIinterface.getDefExamplesSynonymsFromDictionary( app_idul, app_keyul, searchedWord);
         callerExample.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
-//                if (!response.isSuccessful()) {
-//                    return;
-//                }
+                if (!response.isSuccessful()) {
+                    return;
+                }
                 Example exemplu = response.body();
                 List<Result> listResults = exemplu.getResults();
                 Result rez = listResults.get(0);
