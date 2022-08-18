@@ -3,8 +3,12 @@ package com.simona.oxforddictionary4;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -23,7 +27,7 @@ import com.simona.oxforddictionary4.pojoClasses.Synonym;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.ExecutorService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener clickBtnListener;
     APIinterface apIinterface;
 
-    private String baseURLLstring =
+    private String baseURLstring =
             "https://od-api.oxforddictionaries.com:443/api/v2/entries/";
     private String app_idul = BuildConfig.APP_ID_OXFORD;
     private String app_keyul = BuildConfig.APP_KEY_OXFORD;
@@ -64,16 +68,16 @@ public class MainActivity extends AppCompatActivity {
         listExamples = new ArrayList<>();
         listSynonymus = new ArrayList<>();
         nameTV = findViewById(R.id.numeID);
-        definitionTV = findViewById(R.id.textViewDefinitieID);
-        synonymusTV = findViewById(R.id.textViewSinoID);
-        exampleTV = findViewById(R.id.textViewExemID);
+        definitionTV = findViewById(R.id.definitionTV);
+        synonymusTV = findViewById(R.id.synoTV);
+        exampleTV = findViewById(R.id.exampleTV);
         searchBtn = findViewById(R.id.searchButton);
         inputED = findViewById(R.id.inputEditText);
         spearkerButton = findViewById(R.id.speakerButton);
         spearkerButton.setEnabled(false);
 
         Retrofit myRetrofit = new Retrofit.Builder()
-                .baseUrl(baseURLLstring)
+                .baseUrl(baseURLstring)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -90,9 +94,20 @@ public class MainActivity extends AppCompatActivity {
                         listExamples.clear();
                         listSynonymus.clear();
 
-                        definitionTV.setText("DEFINITIONS: " + "\n");
-                        synonymusTV.setText("SYNONYMS: " + "\n");
-                        exampleTV.setText("EXAMPLES: " + "\n");
+                        SpannableString def = new SpannableString("DEFINITIONS:");
+                        def.setSpan(new StyleSpan(Typeface.BOLD), 0, 12, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        definitionTV.setText(def); // + "\n");
+                        definitionTV.append("\n");
+
+                        SpannableString syn = new SpannableString("SYNONYMS:");
+                        syn.setSpan(new StyleSpan(Typeface.BOLD), 0,9, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE );
+                        synonymusTV.setText(syn);
+                        synonymusTV.append("\n");
+
+                        SpannableString ex = new SpannableString("EXAMPLES:");
+                        ex.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        exampleTV.setText(ex);
+                        exampleTV.append("\n");
 
                         getDefinitionExamplesSynonyms(searchedWord);
                         inputED.setText(null);
@@ -126,15 +141,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getDefinitionExamplesSynonyms(String searchedWord) {
-        Call<Example> callerExample = apIinterface.getDefExamplesSynonymsFromDictionary( app_idul, app_keyul, searchedWord);
+        Call<Example> callerExample = apIinterface.getDefinitionsExamplesSynonymusFromDictionary( app_idul, app_keyul, searchedWord);
         callerExample.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call, Response<Example> response) {
                 if (!response.isSuccessful()) {
                     return;
                 }
-                Example exemplu = response.body();
-                List<Result> listResults = exemplu.getResults();
+                Example example = response.body();
+                List<Result> listResults = example.getResults();
                 Result rez = listResults.get(0);
                 List<LexicalEntry> listLexicalEntries = rez.getLexicalEntries();
                 for (LexicalEntry le : listLexicalEntries) {
@@ -142,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     for (Entry entry : listEntries) {
                         List<Sense> listSenses = entry.getSenses();
                         for (Sense currentSense : listSenses) {
-                            Log.i("LUNG SENSE = ", listSenses.size() + "");
+
                             // DEFINITII:
                             try {
                                 listDefinitions.add(currentSense.getDefinitions().get(0));
@@ -153,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
                             //EXEMPLE:
                             try {
                                 List<Example__1> listEXAMPLES = currentSense.getExamples();
-                                Log.i("LUNG EXEM = ", listEXAMPLES.size() + "");
                                 for (Example__1 e1 : listEXAMPLES) {
                                     String exCurent = e1.getText();
                                     listExamples.add(exCurent);
@@ -165,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                             // SINONIME
                             try {
                                 List<Synonym> listSYNO = currentSense.getSynonyms();
-                                Log.i("LUNG SYN = ", listSYNO.size() + "");
                                 for (Synonym synonym : listSYNO) {
                                     listSynonymus.add(synonym.getText());
                                 }

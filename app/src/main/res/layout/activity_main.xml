@@ -64,7 +64,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textViewDefinitieID"
+                android:id="@+id/definitionTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -74,7 +74,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/textViewSinoID"
+                android:id="@+id/synoTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -84,7 +84,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/textViewExemID"
+                android:id="@+id/exampleTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"

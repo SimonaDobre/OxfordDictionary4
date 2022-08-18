@@ -14,10 +14,10 @@ public interface APIinterface {
 
     @Headers("Accept: application/json")
     @GET("en-us/{word}?strictMatch=false")
-    Call<Example> getDefExamplesSynonymsFromDictionary(
+    Call<Example> getDefinitionsExamplesSynonymusFromDictionary(
             @Header("app_id") String apiIDul,
             @Header("app_key") String apiKeyul,
-            @Path("word") String cuvantAles
+            @Path("word") String chosenWord
     );
 
 }
